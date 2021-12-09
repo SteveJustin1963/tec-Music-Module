@@ -5,5 +5,5 @@ TEC-1 Music Synthesiser - COMPUMUSE 1983
 
 ![](https://github.com/SteveJustin1963/tec-Music-Module/blob/master/pics/60723986_2355547531390157_8583667062189064192_n.jpg)
 
-see the text on pcb for proof
+see the text on pcb for proof, signed Ken Stone, well done!!
 
