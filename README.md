@@ -1,5 +1,5 @@
 # tec-Music-Module
-TEC-1 Music Synthesiser - COMPUMUSE 1983
+unfortunatly its not metioned in any TE article but it does exist.
 
 ![](https://github.com/SteveJustin1963/tec-Music-Module/blob/master/pics/56997451_2328754837402760_8076912727156588544_n.jpg)
 
@@ -9,6 +9,7 @@ whats in the rom ? whats the other socket for ?
 ![](https://github.com/SteveJustin1963/tec-Music-Module/blob/master/pics/60723986_2355547531390157_8583667062189064192_n.jpg)
 
 
+## Music Synthesiser - COMPUMUSE 1983
 the other pcb seems to be a version of the magazine, the crystal is broken off. 
 see magazine https://github.com/SteveJustin1963/tec-Music-Module/blob/master/docs/EA%201983-08%20August.pdf
 
