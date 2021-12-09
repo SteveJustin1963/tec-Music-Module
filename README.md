@@ -11,7 +11,7 @@ whats in the rom ? whats the other socket for ?
 
 
 ## Music Synthesiser - COMPUMUSE 1983
-the other pcb seems is a version from EA magazine, the crystal is broken off. suspect another TE board.  
+the other pcb seems is a version from EA magazine, the crystal is broken off. suspect another TE board right hand side.  
 see magazine https://github.com/SteveJustin1963/tec-Music-Module/blob/master/docs/EA%201983-08%20August.pdf
 
 
