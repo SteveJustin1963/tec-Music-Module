@@ -3,8 +3,10 @@ unfortunatly its not metioned in any TE article but it does exist.
 
 ![](https://github.com/SteveJustin1963/tec-Music-Module/blob/master/pics/56997451_2328754837402760_8076912727156588544_n.jpg)
 
-see the text on pcb for proof, signed Ken Stone, well done!!
-whats in the rom ? whats the other socket for ?
+See the text on pcb for proof, signed Ken Stone, well done!!
+
+- whats in the rom - to store music code that can be called from the program on the tec1
+- whats the other socket for - to conect to the tec-1 expanssion port) 
 
 
 ![](https://github.com/SteveJustin1963/tec-Music-Module/blob/master/pics/60723986_2355547531390157_8583667062189064192_n.jpg)
