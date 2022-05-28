@@ -5,6 +5,8 @@ TE Music-Module is unfortunatly not metioned in any TE article but it does exist
 ![](https://github.com/SteveJustin1963/tec-Music-Module/blob/master/pics/sbs-comp1.png)
 side by side
 
+
+
 ![](https://github.com/SteveJustin1963/tec-Music-Module/blob/master/pics/60723986_2355547531390157_8583667062189064192_n.jpg)
 ![](https://github.com/SteveJustin1963/tec-Music-Module/blob/master/pics/56997451_2328754837402760_8076912727156588544_n.jpg)
 
