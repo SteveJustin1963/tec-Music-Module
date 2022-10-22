@@ -17,6 +17,14 @@ TE Music-Module is unfortunatly not metioned in any TE article but it does exist
 
 
 
+
+## Acknowledgement
+- 10/2022  well done Brian Chiha
+https://www.facebook.com/groups/623556744820045/search/?q=SN76489%20
+
+
+
+
 ### Ref
 - https://github.com/SteveJustin1963/tec-Music-Module/blob/master/docs/EA%201983-08%20August.pdf
 - https://github.com/crsjones/TEC-1/tree/main/TEC-MusicModule
