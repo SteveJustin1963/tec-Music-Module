@@ -1,0 +1,57 @@
+// Set up the MIDI channel
+:MIDIChannel
+  1000 /O 3    // Output the MIDI channel to port 3
+;
+
+// Set note pitch
+:SetNotePitch
+  `0ppp pppp` /O 3  // Output the note pitch to port 3
+;
+
+// Set velocity
+:SetVelocity
+  `0vvv vvvv` /O 3  // Output the velocity to port 3
+;
+
+// Set volume
+:SetVolume
+  `0b0 0 7 64` /O 3  // Output the volume to port 3
+;
+
+// Select sound bank
+:SelectSoundBank
+  `0b0 20 1` /O 3  // Output sound bank selection to port 3
+;
+
+// Select sound in sound bank
+:SelectSound
+  `0c0 2` /O 3  // Output sound selection in bank to port 3
+;
+
+// Pitch bend
+:PitchBend
+  `0e0` /O 3  // Output pitch bend to port 3
+;
+
+// Reset notes
+:ResetNotes
+  `0f0` /O 3  // Output reset notes command to port 3
+;
+
+// End message
+:EndMessage
+  `0f7` /O 3  // Output end command to port 3
+;
+
+// Main function to output all MIDI commands
+:SendMIDI
+  MIDIChannel        // Set up the MIDI channel
+  SetNotePitch       // Set note pitch
+  SetVelocity        // Set note velocity
+  SetVolume          // Set volume
+  SelectSoundBank    // Select sound bank
+  SelectSound        // Select sound in bank
+  PitchBend          // Apply pitch bend
+  ResetNotes         // Reset notes
+  EndMessage         // Send end of the message
+;
