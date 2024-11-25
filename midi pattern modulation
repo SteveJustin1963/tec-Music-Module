@@ -1,0 +1,230 @@
+  pattern modulation features including velocity changes, note shifting, rhythmic variations and modulation envelopes.
+
+```mint
+// Initialize modulation system
+:I 
+3 p!                 // MIDI port
+[ #90 #80 #B0 #E0 ] c!  // MIDI commands
+[ 64 64 64 64        // Initial velocities
+  64 64 64 64 ] v!   
+[ 0 0 0 0            // Pitch offsets
+  0 0 0 0 ] t!      
+[ 4 4 4 4            // Time divisions
+  4 4 4 4 ] d!      
+0 m!                 // Modulation state
+;
+
+// Modulation shapes
+:S 
+[ 0 16 32 48 64 80 96 112    // Ramp up
+  127 112 96 80 64 48 32 16  // Ramp down
+  0 127 0 127 0 127 0 127    // Square
+  64 96 127 96 64 32 0 32    // Triangle
+  64 64 64 96 127 96 64 64   // Bell
+  32 48 64 96 96 64 48 32 ] s! // Window
+;
+
+// LFO rates
+:L
+[ 1 2 4 8 16 32 64 128 ] l!
+
+// Velocity modulation
+// shape rate step -- velocity
+:V
+>r >r                // Store params
+8 * + s + ?          // Get shape value
+r> l + ? /           // Apply rate
+r> 127 * +          // Scale to velocity
+127 & 1 +           // Limit to valid range
+;
+
+// Time modulation
+// shape rate step -- timing
+:T
+>r >r                // Store params
+8 * + s + ?          // Get shape value
+r> l + ? /           // Apply rate
+r> 8 * +            // Scale to timing
+15 &                // Limit range
+1 +                 // Ensure non-zero
+;
+
+// Pitch modulation
+// shape rate step -- offset
+:P
+>r >r                // Store params
+8 * + s + ?          // Get shape value
+r> l + ? /           // Apply rate
+12 /                 // Scale to semitones
+r> +                 // Add base offset
+24 & -12 +          // Limit to +/-12
+;
+
+// Apply modulations to note
+// note velocity time -- modulated_note modulated_velocity modulated_time
+:M
+>r >r >r             // Store input params
+// Get modulation values
+m @ /i 3 / 6 & s + ? w!  // Current wave position
+// Apply modulations
+r> w @ 0 V v!        // Velocity mod
+r> w @ 1 P p!        // Pitch mod
+r> w @ 2 T t!        // Time mod
+// Update position
+m @ 1+ m!            // Increment position
+// Return modified values
+p v t                // Stack: pitch velocity time
+;
+
+// Pattern with modulation
+// base_note base_velocity pattern_length --
+:A
+>r >r >r             // Store params
+r @ (                // For pattern length
+  // Get base values
+  r> r> r>           // Get stored params
+  M                  // Apply modulation
+  >r >r >r           // Store for next iteration
+  // Play note
+  " " N              // Note on with velocity
+  " D                // Delay for time
+  F                  // Note off
+)
+r> r> r> ' ' '       // Clean stack
+;
+
+// Envelope generator
+// attack decay sustain release --
+:E
+>r >r >r             // Store ADSR
+[ " " " r> ] e!      // Store in envelope array
+;
+
+// Apply envelope to note
+// note velocity envelope --
+:N
+>r >r                // Store params
+" e + ? v!           // Get envelope value
+r> r> v N            // Play with envelope
+;
+
+// Example modulated patterns
+
+// Rising velocity pattern
+:R
+60 64 8              // Base note, velocity, length
+0 0                  // Shape 0 (ramp up), rate 0
+A                    // Play pattern
+;
+
+// Pitch wobble pattern
+:W
+60 64 16             // Base note, velocity, length
+3 2                  // Shape 3 (triangle), rate 2
+A                    // Play pattern
+;
+
+// Time shuffle pattern
+:H
+60 64 8              // Base note, velocity, length
+4 1                  // Shape 4 (bell), rate 1
+A                    // Play pattern
+;
+
+// Combined modulation pattern
+:C
+0 m!                 // Reset modulation
+16 (                 // 16 steps
+  60                // Base note
+  64                // Base velocity
+  8                 // Pattern length
+  M                 // Apply all modulations
+  N                 // Play note
+)
+;
+
+// Modulation presets
+:Q
+[ 0 0 0             // No modulation
+  0 2 0             // Velocity only
+  3 1 0             // Pitch only
+  4 1 1             // Time only
+  3 2 2             // Full modulation
+  5 3 1 ] q!        // Complex pattern
+;
+
+// Load modulation preset
+// preset --
+:D
+3 * q + ?           // Get preset values
+>r >r               // Store for later
+m!                  // Set modulation type
+;
+
+// Interactive pattern
+:Y
+/U (
+  // Get current modulation
+  m @ s + ? v!       // Get modulation value
+  
+  // Apply to note params
+  60 v @ 4           // Base note, mod velocity, time
+  M                  // Apply modulations
+  
+  // Play note
+  N                  // Note on
+  " D                // Wait
+  F                  // Note off
+  
+  // Check for exit
+  K #FF = /W         // Break on key press
+)
+;
+
+// Example usage:
+// I                Initialize
+// R                Rising velocity pattern
+// W                Pitch wobble pattern
+// H                Time shuffle pattern
+// C                Combined modulation
+// 2 D              Load pitch modulation preset
+// Y                Start interactive pattern
+
+```
+
+Key Features:
+
+1. Modulation Types:
+   - Velocity modulation
+   - Pitch modulation
+   - Time modulation
+   - Combined modulations
+
+2. Modulation Shapes:
+   - Ramp up/down
+   - Square
+   - Triangle
+   - Bell curve
+   - Window
+
+3. Control Features:
+   - LFO rates
+   - Pattern length
+   - Modulation depth
+   - Preset patterns
+
+4. Advanced Features:
+   - Envelope generation
+   - Multiple simultaneous modulations
+   - Pattern presets
+   - Interactive control
+
+Example Usage:
+```mint
+I               // Initialize
+R               // Play rising velocity pattern
+W               // Play pitch wobble pattern
+H               // Play time shuffle pattern
+2 D             // Load pitch modulation preset
+Y               // Start interactive pattern
+```
