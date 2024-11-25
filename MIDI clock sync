@@ -1,0 +1,166 @@
+  MIDI clock sync code:
+
+```mint
+// Initialize system
+:I
+3 p!                 // MIDI port
+[ #F8 #FA #FB #FC ] m!  // Clock commands (clock,start,continue,stop)
+0 c!                 // Clock counter
+0 t!                 // Tempo tracker
+0 b!                 // Beat counter
+0 r!                 // Running flag
+[ 0 0 0 0 0 0 ] q!  // Event queue
+0 h!                 // Queue head
+0 l!                 // Last position
+;
+
+// Process MIDI clock
+:C
+c 1+ 24 & c!         // Increment clock counter
+c 0 = (              // On beat
+  b 1+ 4 & b!        // Increment beat counter
+  b B                // Call beat handler
+)
+;
+
+// Queue MIDI event
+:Q
+q h + !              // Store event
+h 1+ 6 & h!          // Update queue head
+;
+
+// Process event queue
+:P
+l q + ? v!           // Get event
+v /F = /F (          // If valid
+  v m ? = C          // Clock tick
+  v m 1+ ? = (       // Start
+    /T r!            // Set running
+    0 c! 0 b!        // Reset counters
+  )
+  v m 2+ ? = /T r!   // Continue
+  v m 3+ ? = /F r!   // Stop
+)
+l 1+ 6 & l!          // Update position
+;
+
+// Wait for clock divisions
+:W
+24 /                 // Convert to clocks
+c - 0 < (            // If negative
+  24 +               // Wrap around
+)
+(                    // Wait for clocks
+  c over = /W        // Until reached
+)
+' 
+;
+
+// Play note with quantization
+:N
+y! v! n!             // Store note,vel,div
+y W                  // Wait for timing
+n v K                // Play note
+;
+
+// Beat handler - pattern playback
+:B
+b 0 = (              // First beat
+  60 64 N            // Play C
+)
+b 1 = (              // Second beat
+  64 64 N            // Play E
+)
+b 2 = (              // Third beat
+  67 64 N            // Play G
+)
+b 3 = (              // Fourth beat
+  72 64 N            // Play C
+)
+;
+
+// Interrupt handler
+:Z
+3 /I m!              // Read MIDI byte
+m #F8 = (            // Clock message
+  m Q                // Queue event
+)
+m #FA = m Q          // Start
+m #FB = m Q          // Continue
+m #FC = m Q          // Stop
+;
+
+// Start sync
+:S
+/U (
+  P                  // Process events
+  r /T = /W          // Wait for running
+)
+;
+
+// Stop sync
+:X
+/F r!                // Stop
+0 c! 0 b!           // Reset
+;
+
+// Example patterns
+
+// Synced arpeggio
+:A
+/U (
+  4(                 // Four notes
+    60 /i 4 * +      // Note
+    64               // Velocity
+    6                // Timing division
+    N                // Play quantized
+  )
+  r /F = /W          // Until stopped
+)
+;
+
+// Synced rhythm
+:R
+/U (
+  4(                 // Four beats
+    36               // Bass drum
+    96               // Velocity
+    6                // Division
+    N                // Play quantized
+  )
+  r /F = /W          // Until stopped
+)
+;
+
+// Main program
+:M
+I                    // Initialize
+S                    // Start sync
+A                    // Run arpeggio
+100(                 // Wait
+  1 1 + '
+)
+R                    // Run rhythm
+K #FF = (            // Check for key
+  X                  // Stop sync
+)
+;
+
+```
+
+Key changes:
+
+1. Removed all @ symbols
+2. Simplified variable access
+3. Cleaner conditional checks
+4. More efficient stack usage
+5. Proper MINT2 loop syntax
+
+To use:
+```mint
+I               // Initialize
+S               // Start sync
+A               // Run arpeggio
+R               // Run rhythm
+X               // Stop sync
+```
