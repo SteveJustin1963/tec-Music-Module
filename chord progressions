@@ -1,0 +1,264 @@
+complex including various chord types, voicings, and common progressions.
+
+```mint
+// Initialize system
+:I
+3 p!                 // MIDI port
+0 c!                 // Current chord position
+0 v!                 // Velocity state
+[ 0 4 7             // Major
+  0 3 7             // Minor
+  0 4 8             // Augmented
+  0 3 6             // Diminished
+  0 4 7 10          // Dominant 7
+  0 4 7 11          // Major 7
+  0 3 7 10          // Minor 7
+  0 3 6 9           // Diminished 7
+  0 4 7 9           // Major 6
+  0 3 7 9 ] h!      // Minor 6
+;
+
+// Play note
+:N
+v! n!                // Store note, velocity
+#90 p /O             // Note on
+n p /O
+v p /O
+;
+
+// Stop note
+:F
+n!                   // Store note
+#80 p /O             // Note off
+n p /O
+0 p /O
+;
+
+// Play chord from type array
+// root index --
+:C
+t! r!                // Store root, type
+3(                   // Play triad
+  r /i t 3 * + h + ? +  // Calculate note
+  64 N               // Play note
+)
+50(1 1+')           // Hold
+3(                   // Stop notes
+  r /i t 3 * + h + ? +  // Calculate note
+  F                  // Stop note
+)
+;
+
+// Play 7th chord
+// root index --
+:S
+t! r!                // Store root, type
+4(                   // Play four notes
+  r /i t 4 * + h + ? +  // Calculate note
+  64 N               // Play note
+)
+50(1 1+')           // Hold
+4(                   // Stop notes
+  r /i t 4 * + h + ? +  // Calculate note
+  F                  // Stop note
+)
+;
+
+// Common progressions
+
+// I-IV-V-I
+:P
+60 0 C              // I  (C major)
+65 0 C              // IV (F major)
+67 0 C              // V  (G major)
+60 0 C              // I  (C major)
+;
+
+// ii-V-I
+:J
+62 1 S              // ii  (D minor 7)
+67 4 S              // V   (G dominant 7)
+60 5 S              // I   (C major 7)
+;
+
+// I-vi-IV-V
+:Q
+60 0 C              // I   (C major)
+57 1 C              // vi  (A minor)
+65 0 C              // IV  (F major)
+67 0 C              // V   (G major)
+;
+
+// I-V-vi-IV
+:R
+60 0 C              // I   (C major)
+67 0 C              // V   (G major)
+57 1 C              // vi  (A minor)
+65 0 C              // IV  (F major)
+;
+
+// Blues progression
+:B
+60 4 S              // I7  (C7)
+65 4 S              // IV7 (F7)
+60 4 S              // I7  (C7)
+60 4 S              // I7  (C7)
+65 4 S              // IV7 (F7)
+65 4 S              // IV7 (F7)
+60 4 S              // I7  (C7)
+60 4 S              // I7  (C7)
+67 4 S              // V7  (G7)
+65 4 S              // IV7 (F7)
+60 4 S              // I7  (C7)
+67 4 S              // V7  (G7)
+;
+
+// Circle of fifths
+:O
+60 0 C              // C
+67 0 C              // G
+62 1 C              // Dm
+69 1 C              // Am
+65 0 C              // F
+60 0 C              // C
+;
+
+// Modal progression
+:M
+60 0 C              // I   (Ionian)
+62 1 C              // ii  (Dorian)
+64 1 C              // iii (Phrygian)
+65 0 C              // IV  (Lydian)
+67 0 C              // V   (Mixolydian)
+69 1 C              // vi  (Aeolian)
+71 2 C              // vii (Locrian)
+;
+
+// Chord voicing variations
+
+// Close voicing
+:V
+t! r!                // Store root, type
+4(
+  r /i t 4 * + h + ? +  // Basic voicing
+  64 N
+)
+;
+
+// Open voicing
+:W
+t! r!                // Store root, type
+r 64 N               // Root
+r 12 + 64 N          // Octave up
+r 7 + 64 N           // Fifth
+r 16 + 64 N          // Third up octave
+;
+
+// Drop 2 voicing
+:X
+t! r!                // Store root, type
+r 64 N               // Root
+r 16 + 64 N          // Third up octave
+r 19 + 64 N          // Fifth up octave
+r 24 + 64 N          // Seventh up octave
+;
+
+// Complex progressions
+
+// Extended harmony
+:E
+60 5 S              // Cmaj7
+65 6 S              // Fm7
+70 4 S              // Bb7
+63 5 S              // Ebmaj7
+;
+
+// Chromatic progression
+:H
+60 0 C              // C
+61 0 C              // C#
+62 0 C              // D
+63 0 C              // Eb
+64 0 C              // E
+65 0 C              // F
+;
+
+// Example song form AABA
+:Y
+P                   // A section
+P                   // A section
+B                   // B section
+P                   // A section
+;
+
+// Demo sequence
+:D
+I                   // Initialize
+P                   // Play I-IV-V-I
+100(1 1+')          // Wait
+J                   // Play ii-V-I
+100(1 1+')          // Wait
+Q                   // Play I-vi-IV-V
+100(1 1+')          // Wait
+B                   // Play blues
+;
+
+// Test all chord types
+:T
+60 0 C              // Major
+60 1 C              // Minor
+60 2 C              // Augmented
+60 3 C              // Diminished
+60 4 S              // Dominant 7
+60 5 S              // Major 7
+60 6 S              // Minor 7
+60 7 S              // Diminished 7
+60 8 S              // Major 6
+60 9 S              // Minor 6
+;
+
+// Play random progression
+:Z
+4(                  // 4 chords
+  60 s 7 * 12 / +   // Root note
+  s 13 * 4 / 10 &   // Chord type
+  S                 // Play seventh chord
+  s 1+ s!           // Update seed
+)
+;
+
+```
+
+This system provides:
+
+1. Chord Types:
+   - Major/Minor triads
+   - Augmented/Diminished
+   - Seventh chords
+   - Extended harmonies
+
+2. Common Progressions:
+   - I-IV-V-I
+   - ii-V-I jazz
+   - Pop progressions
+   - Blues changes
+   - Circle of fifths
+   - Modal progressions
+
+3. Voicing Options:
+   - Close voicing
+   - Open voicing
+   - Drop 2 voicing
+   - Extended voicings
+
+Example Usage:
+```mint
+I               // Initialize
+P               // Play I-IV-V-I
+J               // Play jazz ii-V-I
+B               // Play blues progression
+O               // Play circle of fifths
+M               // Play modal progression
+T               // Test all chord types
+D               // Play demo sequence
+```
