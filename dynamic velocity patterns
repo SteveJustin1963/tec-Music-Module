@@ -1,0 +1,255 @@
+ dynamic velocity patterns with various curves, accents, and rhythmic intensities without using @.
+
+```mint
+// Initialize velocity system
+:I
+3 p!                 // MIDI port
+[ 0 32 64 96 127 96 64 32 ] v!  // Basic velocity curve
+[ 127 64 96 64 127 64 96 64 ] a!  // Accent pattern
+[ 64 48 32 48 64 96 127 96 ] c!   // Crescendo
+[ 127 96 64 48 32 24 16 8 ] d!    // Diminuendo
+0 s!                 // Step counter
+;
+
+// Basic note player
+:N
+y! n!                // Store note,velocity
+#90 p /O             // Note on
+n p /O               // Note
+y p /O               // Velocity
+50(1 1+')           // Hold
+#80 p /O             // Note off
+n p /O               // Note
+0 p /O               // Zero velocity
+;
+
+// Velocity curves
+
+// Crescendo pattern
+:C
+8(
+  60                 // Base note
+  /i c + ?           // Get velocity from curve
+  N                  // Play note
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Diminuendo pattern
+:D
+8(
+  60                 // Base note
+  /i d + ?           // Get velocity from curve
+  N                  // Play note
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Accent pattern
+:A
+8(
+  60                 // Base note
+  /i a + ?           // Get velocity from accent pattern
+  N                  // Play note
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Wave pattern
+:W
+8(
+  60                 // Base note
+  /i v + ?           // Get velocity from wave
+  N                  // Play note
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Random velocity pattern
+:R
+8(
+  60                 // Base note
+  s 17 * 32 + 127 & // Generate pseudo-random velocity
+  N                  // Play note
+  s 1+ s!            // Increment seed
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Velocity scale function
+:S
+y! v!                // Store value and scale
+v 127 * y /         // Scale to max velocity
+;
+
+// Pattern combiners
+
+// Combine two patterns
+:B
+y! x!                // Store pattern indices
+8(
+  60                 // Base note
+  /i x + ? /i y + ? + 2 / // Average velocities
+  N                  // Play note
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Create velocity sequence
+:Q
+[ 127 64 96 32 127 64 96 32 ] q!  // Store sequence
+;
+
+// Play sequence
+:P
+8(
+  60                 // Base note
+  /i q + ?           // Get velocity from sequence
+  N                  // Play note
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Humanize velocity
+:H
+v!                   // Store base velocity
+v s 7 * 15 - +      // Add variation
+127 & 1 +           // Limit to valid range
+;
+
+// Ghost note pattern
+:G
+8(
+  60                 // Base note
+  /i 2 & (           // Alternate full/ghost
+    96               // Full velocity
+  ) /E (
+    32               // Ghost velocity
+  )
+  N                  // Play note
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Swing pattern
+:J
+8(
+  60                 // Base note
+  /i 2 & (           // Alternate strong/weak
+    112              // Strong beat
+  ) /E (
+    64               // Weak beat
+  )
+  N                  // Play note
+  /i 2 & (           // Longer gap on strong
+    35(1 1+')
+  ) /E (
+    15(1 1+')
+  )
+)
+;
+
+// Dynamic patterns
+
+// Intensity builder
+:T
+16(
+  60                 // Base note
+  /i 8 * 127 &      // Increasing velocity
+  N                  // Play note
+  /i 2 + (1 1+')    // Accelerating gaps
+)
+;
+
+// Echo pattern
+:E
+8(
+  60                 // Base note
+  127 /i 16 * -     // Decreasing velocity
+  1 max             // Ensure positive
+  N                  // Play note
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Compound patterns
+
+// Build and fade
+:F
+T                    // Build intensity
+50(1 1+')           // Gap
+E                    // Fade out
+;
+
+// Alternating accents
+:L
+12(
+  60                 // Base note
+  /i 3 & 0 = (       // Every third note
+    127              // Accent
+  ) /E (
+    64               // Normal
+  )
+  N                  // Play note
+  25(1 1+')         // Gap between notes
+)
+;
+
+// Example usage sequence
+:M
+I                    // Initialize
+C                    // Crescendo
+50(1 1+')           // Wait
+D                    // Diminuendo
+50(1 1+')           // Wait
+A                    // Accents
+50(1 1+')           // Wait
+W                    // Wave
+50(1 1+')           // Wait
+R                    // Random
+50(1 1+')           // Wait
+G                    // Ghost notes
+50(1 1+')           // Wait
+J                    // Swing
+;
+
+```
+
+Key features:
+
+1. Basic Patterns:
+   - Crescendo/Diminuendo
+   - Accents
+   - Wave forms
+   - Random variations
+
+2. Playing Styles:
+   - Ghost notes
+   - Swing feel
+   - Echo effects
+   - Intensity builders
+
+3. Pattern Controls:
+   - Velocity scaling
+   - Pattern combining
+   - Humanization
+   - Sequence storage
+
+Example Usage:
+```mint
+I               // Initialize
+C               // Play crescendo
+D               // Play diminuendo
+A               // Play accents
+W               // Play wave pattern
+R               // Play random pattern
+G               // Play ghost notes
+J               // Play swing pattern
+M               // Play demo sequence
+```
+
+Special Patterns:
+- T: Intensity builder
+- E: Echo effect
+- F: Build and fade
+- L: Alternating accents
