@@ -1,0 +1,251 @@
+controlling note lengths, including staccato, legato, and variable durations.
+
+```mint
+// Initialize length control system
+:I
+3 p!                 // MIDI port
+[ 4 8 16 32 64 96 128 ] d!  // Duration values
+[ 25 50 75 100 ] g!        // Gap percentages
+0 s!                 // Sequence position
+[ 0 0 0 0 0 0 0 0 ] m!    // Note memory
+0 c!                 // Note counter
+;
+
+// Basic note on
+:N
+y! n!                // Store note and velocity
+#90 p /O             // Note on command
+n p /O               // Note number
+y p /O               // Velocity
+;
+
+// Basic note off
+:F
+n!                   // Store note
+#80 p /O             // Note off command
+n p /O               // Note number
+0 p /O               // Zero velocity
+;
+
+// Play note with duration
+:P
+l! y! n!             // Store note, velocity, length
+n y N                // Note on
+l (1 1+')            // Hold duration
+n F                  // Note off
+;
+
+// Staccato note (50% duration)
+:S
+l! y! n!             // Store note, velocity, length
+n y N                // Note on
+l 2 / (1 1+')        // Hold half duration
+n F                  // Note off
+l 2 / (1 1+')        // Rest for remainder
+;
+
+// Legato note (95% duration)
+:L
+l! y! n!             // Store note, velocity, length
+n y N                // Note on
+l 95 * 100 / (1 1+') // Hold 95% duration
+n F                  // Note off
+l 5 * 100 / (1 1+')  // Short gap
+;
+
+// Portato note (75% duration)
+:T
+l! y! n!             // Store note, velocity, length
+n y N                // Note on
+l 75 * 100 / (1 1+') // Hold 75% duration
+n F                  // Note off
+l 25 * 100 / (1 1+') // Medium gap
+;
+
+// Create overlapping notes
+:O
+l! y! n!             // Store note, velocity, length
+n y N                // First note on
+l 2 / (1 1+')        // Wait half duration
+n 4 + y N            // Second note on (up a third)
+l 2 / (1 1+')        // Wait remainder
+n F                  // First note off
+l 2 / (1 1+')        // Wait half more
+n 4 + F              // Second note off
+;
+
+// Store note in memory
+:M
+l! y! n!             // Store note, velocity, length
+n m c + !            // Store note
+y m c 1+ + !         // Store velocity
+l m c 2 + + !        // Store length
+c 3 + c!             // Update counter
+;
+
+// Play from memory
+:Y
+c 3 / (              // For each stored note
+  /i 3 * m + ? n!    // Get note
+  /i 3 * 1+ m + ? y! // Get velocity
+  /i 3 * 2+ m + ? l! // Get length
+  n y l P            // Play note
+)
+0 c!                 // Reset counter
+;
+
+// Length patterns
+
+// Dotted rhythm
+:D
+8(
+  60                 // Base note
+  64                 // Velocity
+  /i 2 & (           // Alternate long/short
+    48               // Long duration
+  ) /E (
+    16               // Short duration
+  )
+  P                  // Play note
+)
+;
+
+// Swing rhythm
+:W
+8(
+  60                 // Base note
+  64                 // Velocity
+  /i 2 & (           // Alternate long/short
+    36               // Long duration
+  ) /E (
+    12               // Short duration
+  )
+  P                  // Play note
+)
+;
+
+// Triplet pattern
+:R
+6(
+  60 /i 4 * +        // Ascending notes
+  64                 // Velocity
+  24                 // Triplet duration
+  P                  // Play note
+)
+;
+
+// Style variations
+
+// Marcato (sharp attack, full length)
+:A
+l! y! n!             // Store params
+n y 127 * 100 / N    // Full velocity attack
+l 10 * 100 / (1 1+') // Initial duration
+n y 64 * 100 / N     // Reduce to medium velocity
+l 90 * 100 / (1 1+') // Remainder duration
+n F                  // Note off
+;
+
+// Flutter (rapid repeats)
+:U
+l! y! n!             // Store params
+6(                   // 6 rapid repeats
+  n y N              // Note on
+  l 10 / (1 1+')     // Short duration
+  n F                // Note off
+  l 10 / (1 1+')     // Short gap
+)
+;
+
+// Example sequences
+
+// Mixed articulation sequence
+:Q
+60 64 32 P           // Normal note
+60 64 32 S           // Staccato
+60 64 32 L           // Legato
+60 64 32 T           // Portato
+;
+
+// Length progression
+:G
+8(
+  60                 // Base note
+  64                 // Velocity
+  /i 8 * 8 +        // Increasing duration
+  P                  // Play note
+)
+;
+
+// Overlapping sequence
+:V
+4(
+  60 /i 4 * +        // Ascending notes
+  64                 // Velocity
+  48                 // Duration
+  O                  // Play overlapped
+)
+;
+
+// Main demo sequence
+:X
+I                    // Initialize
+D                    // Dotted rhythm
+50(1 1+')            // Gap
+W                    // Swing rhythm
+50(1 1+')            // Gap
+R                    // Triplet pattern
+50(1 1+')            // Gap
+Q                    // Mixed articulation
+50(1 1+')            // Gap
+G                    // Length progression
+;
+
+// Memory playback example
+:Z
+// Store sequence
+60 64 32 M           // Store first note
+64 64 24 M           // Store second note
+67 64 32 M           // Store third note
+Y                    // Play sequence
+;
+
+```
+
+This system provides:
+
+1. Basic Length Controls:
+   - Fixed durations
+   - Percentage-based lengths
+   - Gap controls
+   - Memory storage
+
+2. Articulation Types:
+   - Staccato (short)
+   - Legato (connected)
+   - Portato (medium)
+   - Marcato (accented)
+
+3. Rhythm Patterns:
+   - Dotted rhythms
+   - Swing feel
+   - Triplets
+   - Progressive lengths
+
+4. Special Effects:
+   - Overlapping notes
+   - Flutter repeats
+   - Variable attacks
+   - Mixed articulations
+
+Example Usage:
+```mint
+I               // Initialize
+D               // Play dotted rhythm
+W               // Play swing rhythm
+R               // Play triplet pattern
+Q               // Play mixed articulations
+G               // Play length progression
+X               // Play demo sequence
+Z               // Play from memory
+```
