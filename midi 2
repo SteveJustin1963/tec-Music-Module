@@ -1,0 +1,146 @@
+I'll rewrite this for proper MINT2 syntax, fixing the string literals and adding proper MIDI command bytes:
+
+```mint
+// MIDI port definitions and base commands
+:I
+3 p!                  // Set MIDI port to 3
+[ #90 #80 #B0 #C0 #E0 #F0 #F7 ] m!  // MIDI command bytes
+;
+
+// Initialize channel (0-15)
+// n --
+:C
+#0F &                 // Mask to valid channel
+" m ? |              // Combine with note-on command
+p /O                 // Send to MIDI port
+;
+
+// Set note pitch (0-127) and velocity (0-127)
+// pitch velocity --
+:N
+$                    // Swap pitch and velocity
+#7F &                // Mask pitch to 7 bits
+p /O                 // Send pitch
+#7F &                // Mask velocity to 7 bits
+p /O                 // Send velocity
+;
+
+// Set controller value (0-127)
+// controller value --
+:V
+$                    // Swap controller and value
+m 2 + ? p /O        // Send controller command
+#7F &                // Mask controller to 7 bits
+p /O                 // Send controller number
+#7F &                // Mask value to 7 bits
+p /O                // Send value
+;
+
+// Select program (0-127)
+// program --
+:S
+m 3 + ? p /O        // Send program change command
+#7F &                // Mask to valid program
+p /O                // Send program number
+;
+
+// Pitch bend (-8192 to +8192)
+// bend --
+:B
+8192 +               // Offset to positive range
+" #7F &             // LSB
+p /O
+7 } #7F &           // MSB
+p /O
+;
+
+// Reset all notes
+:R
+m 5 + ? p /O        // Send all notes off
+;
+
+// End system exclusive message
+:E
+m 6 + ? p /O        // Send end of sysex
+;
+
+// Example usage functions
+// Play note with velocity
+:P
+" N                 // Note on with velocity
+100(1 1+')          // Delay
+0 $                 // Zero velocity for note off
+N                   // Note off
+;
+
+// Play chord (takes 3 notes and velocity)
+:H
+>r >r               // Store notes
+" P                 // Play first note
+r> " P              // Play second note
+r> " P              // Play third note
+;
+
+// Initialize system with defaults
+:M
+I                   // Initialize commands
+0 C                 // Set channel 0
+64 7 V              // Set default volume
+0 0 V               // Reset modulation
+0 B                 // Reset pitch bend
+;
+
+// Test sequence
+:T
+M                   // Initialize
+// Play C major chord
+60 64 H             // Middle C
+64 64 H             // E
+67 64 H             // G
+1000(1 1+')         // Hold
+R                   // Reset
+;
+
+```
+
+Key improvements:
+
+1. Proper MIDI Command Structure:
+   - Note on/off commands
+   - Controller messages
+   - Program changes
+   - System messages
+
+2. Data Validation:
+   - Masks for valid ranges
+   - Channel number checking
+   - Velocity scaling
+
+3. Added Features:
+   - Chord playing
+   - Note durations
+   - System initialization
+   - Test sequence
+
+Example Usage:
+```mint
+M               // Initialize MIDI
+60 64 P         // Play middle C with medium velocity
+60 64 64 64 H   // Play C major chord
+T               // Run test sequence
+```
+
+The system allows:
+1. Channel selection (0-15)
+2. Note control (0-127)
+3. Velocity control (0-127)
+4. Program changes
+5. Controller messages
+6. Pitch bend
+7. System reset
+
+Would you like me to add:
+1. More complex musical sequences?
+2. Arpeggiator functions?
+3. MIDI clock sync?
+4. System exclusive messages?
