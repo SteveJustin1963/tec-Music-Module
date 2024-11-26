@@ -262,3 +262,249 @@ M               // Play modal progression
 T               // Test all chord types
 D               // Play demo sequence
 ```
+
+
+
+///////////////////////////////
+
+
+// Initialize system with MIDI port, counter and chord types
+:I
+// Set MIDI port to 3
+3p!
+// Reset chord position counter
+0c!
+// Reset velocity state
+0v!
+// Define chord intervals array: major, minor, aug, dim, dom7, maj7, min7, dim7, maj6, min6
+[0 4 7 0 3 7 0 4 8 0 3 6 0 4 7 10 0 4 7 11 0 3 7 10 0 3 6 9 0 4 7 9 0 3 7 9]h!
+;
+
+// Play note with velocity
+:N
+// Store velocity and note
+v!n!
+// Send note on command
+#90p/O
+// Send note number
+np/O
+// Send velocity
+vp/O
+;
+
+// Stop note
+:F
+// Store note number
+n!
+// Send note off command
+#80p/O
+// Send note number
+np/O
+// Send zero velocity
+0p/O
+;
+
+// Play triad chord
+:C
+// Store type and root
+t!r!
+// Play three notes
+3(
+  // Calculate note interval
+  r/it3*+h+?+
+  // Play with medium velocity
+  64N
+)
+// Hold duration
+50(1')
+// Stop all three notes
+3(
+  // Calculate note again
+  r/it3*+h+?+
+  // Send note off
+  F
+)
+;
+
+// Play seventh chord
+:S
+// Store type and root
+t!r!
+// Play four notes
+4(
+  // Calculate note interval
+  r/it4*+h+?+
+  // Play with medium velocity
+  64N
+)
+// Hold duration
+50(1')
+// Stop all four notes
+4(
+  // Calculate note again
+  r/it4*+h+?+
+  // Send note off
+  F
+)
+;
+
+// I-IV-V-I progression
+:P
+// I chord (C major)
+600C
+// IV chord (F major)
+650C
+// V chord (G major)
+670C
+// I chord (C major)
+600C
+;
+
+// ii-V-I jazz progression
+:J
+// ii chord (D minor 7)
+621S
+// V chord (G dominant 7)
+674S
+// I chord (C major 7)
+605S
+;
+
+// I-vi-IV-V progression
+:Q
+// I chord (C major)
+600C
+// vi chord (A minor)
+571C
+// IV chord (F major)
+650C
+// V chord (G major)
+670C
+;
+
+// 12-bar blues progression
+:B
+// I7 chord (C7)
+604S
+// IV7 chord (F7)
+654S
+604S
+604S
+654S
+654S
+604S
+604S
+// V7 chord (G7)
+674S
+// IV7 chord (F7)
+654S
+// I7 chord (C7)
+604S
+// V7 chord (G7)
+674S
+;
+
+// Circle of fifths progression
+:O
+// C major
+600C
+// G major
+670C
+// D minor
+621C
+// A minor
+691C
+// F major
+650C
+// C major
+600C
+;
+
+// Modal progression
+:M
+// I Ionian (C major)
+600C
+// ii Dorian (D minor)
+621C
+// iii Phrygian (E minor)
+641C
+// IV Lydian (F major)
+650C
+// V Mixolydian (G major)
+670C
+// vi Aeolian (A minor)
+691C
+// vii Locrian (B diminished)
+712C
+;
+
+// Close voicing for four notes
+:V
+// Store type and root
+t!r!
+// Play four notes in close position
+4(
+  r/it4*+h+?+
+  64N
+)
+;
+
+// Open voicing spread across octaves
+:W
+// Store type and root
+t!r!
+// Root note
+r64N
+// Octave up
+r12+64N
+// Fifth
+r7+64N
+// Third up octave
+r16+64N
+;
+
+// Test all chord types
+:T
+// Major
+600C
+// Minor
+601C
+// Augmented
+602C
+// Diminished
+603C
+// Dominant 7
+604S
+// Major 7
+605S
+// Minor 7
+606S
+// Diminished 7
+607S
+// Major 6
+608S
+// Minor 6
+609S
+;
+
+// Demo sequence
+:D
+// Initialize system
+I
+// Play I-IV-V-I
+P
+// Wait
+100(1')
+// Play jazz progression
+J
+// Wait
+100(1')
+// Play pop progression
+Q
+// Wait
+100(1')
+// Play blues
+B
+;
+
+///////////////////////
