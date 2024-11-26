@@ -8,7 +8,8 @@ The SN76489, a programmable sound generator chip developed by Texas Instruments,
 
 - **TEC-1 Z80 Computer Integration:** Efforts were made to integrate the SN76489 chip with the TEC-1 Z80 computer, including streaming VGM files and adding a 32K SRAM module alongside the sound chip. 
 
-- Brian Chiha https://www.facebook.com/groups/623556744820045/search/?q=SN76489%20
+- Brian Chiha https://github.com/bchiha
+- https://www.facebook.com/groups/623556744820045/search/?q=SN76489%20
 
 
 - **Arduino VGM Player:** An Arduino-based VGM player was developed with a rough emulation of the SN76489, aiming to implement playback of new file formats. 
